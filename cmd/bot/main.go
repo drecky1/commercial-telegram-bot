@@ -1,8 +1,12 @@
+//go:build main
+// +build main
+
 package main
 
 import (
 	"bufio"
 	"context"
+	"flag"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"os"
@@ -13,20 +17,21 @@ import (
 )
 
 func main() {
-	admin := os.Getenv("ADMIN")
-	if admin == "" {
-		log.Println("Сделайте: export ADMIN=<CHAT_ID>")
-		return
+	admin := flag.String("admin", "", "Admin of the bot")
+	token := flag.String("token", "", "Telegram API token of the bot")
+
+	flag.Parse()
+
+	if *admin == "" {
+		log.Fatal("Не передан администратор")
 	}
 
-	token := os.Getenv("TELEGRAM_APITOKEN")
-	if token == "" {
-		log.Println("Сделайте: export TELEGRAM_APITOKEN=<TOKEN>")
-		return
+	if *token == "" {
+		log.Fatal("Не передан администратор")
 	}
 
-	service := telegram.NewService(admin, token)
-	adminInt64, err := strconv.ParseInt(admin, 10, 64)
+	service := telegram.NewService(*admin, *token)
+	adminInt64, err := strconv.ParseInt(*admin, 10, 64)
 	if err != nil {
 		log.Fatalf("Введенный админ не является числовым значение его чата в телеграмм. ")
 	}
