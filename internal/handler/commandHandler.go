@@ -15,7 +15,7 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 	parts := strings.Split(msg.Text, " ")
 	switch parts[0] {
 	case "/get_id":
-		service.SendMessage(msg.Chat.ID, fmt.Sprintf("%d", msg.Chat.ID))
+		_ = service.SendMessage(msg.Chat.ID, fmt.Sprintf("%d", msg.Chat.ID))
 		break
 	case "/start":
 		err = service.SendMenu(msg.Chat.ID, startMenu, startMenuMarkup)

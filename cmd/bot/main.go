@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Введенный админ не является числовым значение его чата в телеграмм. ")
 	}
-	go service.SendMessage(adminInt64, utils.WhatCanBotDo)
+	go func() { _ = service.SendMessage(adminInt64, utils.WhatCanBotDo) }()
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60

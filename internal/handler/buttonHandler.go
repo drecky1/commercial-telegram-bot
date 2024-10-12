@@ -17,7 +17,9 @@ func handleButton(query *tgbotapi.CallbackQuery, service *telegram.Service) erro
 	switch query.Data {
 	case nextButton:
 		text = fmt.Sprintf(participateMenu, service.Settings.MainPrize)
-		go service.SendMessage(message.Chat.ID, "ТУТ БУДЕТ СООБЩЕНИЕ ПО ПОВОДУ ПОЛЬЗОВАТЕЛЬСКОГО СОГЛАШЕНИЯ.")
+		go func() {
+			_ = service.SendMessage(message.Chat.ID, "ТУТ БУДЕТ СООБЩЕНИЕ ПО ПОВОДУ ПОЛЬЗОВАТЕЛЬСКОГО СОГЛАШЕНИЯ.")
+		}()
 		markup = participateMenuMarkup
 	case backButton:
 		text = startMenu
@@ -66,11 +68,11 @@ func handleButton(query *tgbotapi.CallbackQuery, service *telegram.Service) erro
 	}
 
 	callbackCfg := tgbotapi.NewCallback(query.ID, "42")
-	service.Bot.Send(callbackCfg)
+	_, _ = service.Bot.Send(callbackCfg)
 
 	// Replace menu text and keyboard
 	msg := tgbotapi.NewEditMessageTextAndMarkup(message.Chat.ID, message.MessageID, text, markup)
 	msg.ParseMode = tgbotapi.ModeHTML
-	service.Bot.Send(msg)
+	_, _ = service.Bot.Send(msg)
 	return nil
 }
