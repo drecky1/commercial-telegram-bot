@@ -17,16 +17,13 @@ func handleButton(query *tgbotapi.CallbackQuery, service *telegram.Service) erro
 	switch query.Data {
 	case nextButton:
 		text = fmt.Sprintf(participateMenu, service.Settings.MainPrize)
-		go func() {
-			_ = service.SendMessage(message.Chat.ID, "ТУТ БУДЕТ СООБЩЕНИЕ ПО ПОВОДУ ПОЛЬЗОВАТЕЛЬСКОГО СОГЛАШЕНИЯ.")
-		}()
 		markup = participateMenuMarkup
 	case backButton:
 		text = startMenu
 		markup = startMenuMarkup
 	case participateButton:
-		if int64(len(service.Cache.ParticipantsIDs)-1) >= service.Settings.MaxParticipants {
-			return service.SendMessage(message.Chat.ID, "Простите, но уже слишком много участников.")
+		if int64(len(service.Cache.ParticipantsIDs)) >= service.Settings.MaxParticipants {
+			return service.SendMessage(message.Chat.ID, utils.MaxParticipantsComes)
 		}
 		u, ok := service.Cache.Get(message.Chat.ID)
 		if ok {
