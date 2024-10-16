@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"flag"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"os"
@@ -14,21 +13,20 @@ import (
 )
 
 func main() {
-	admin := flag.String("admin", "", "Admin of the bot")
-	token := flag.String("token", "", "Telegram API token of the bot")
-
-	flag.Parse()
-
-	if *admin == "" {
-		log.Fatal("Не передан администратор")
+	admin := os.Getenv("ADMIN")
+	if admin == "" {
+		log.Println("Сделайте: export ADMIN=<CHAT_ID>")
+		return
 	}
 
-	if *token == "" {
-		log.Fatal("Не передан администратор")
+	token := os.Getenv("TELEGRAM_APITOKEN")
+	if token == "" {
+		log.Println("Сделайте: export TELEGRAM_APITOKEN=<TOKEN>")
+		return
 	}
 
-	service := telegram.NewService(*admin, *token)
-	adminInt64, err := strconv.ParseInt(*admin, 10, 64)
+	service := telegram.NewService(admin, token)
+	adminInt64, err := strconv.ParseInt(admin, 10, 64)
 	if err != nil {
 		log.Fatalf("Введенный админ не является числовым значение его чата в телеграмм. ")
 	}
@@ -41,7 +39,7 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	go receiveUpdates(ctx, updates, service)
+	receiveUpdates(ctx, updates, service)
 
 	// Wait for a newline symbol, then cancel handling updates
 	_, err = bufio.NewReader(os.Stdin).ReadBytes('\n')

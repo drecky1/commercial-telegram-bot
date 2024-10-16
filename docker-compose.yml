@@ -1,0 +1,12 @@
+services:
+  bot:
+    container_name: contour_professional_bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TZ: Asia/Yekaterinburg
+      ADMIN: ${ADMIN}
+      TELEGRAM_APITOKEN: ${TELEGRAM_APITOKEN}
+    ports:
+      - 5555:6666
