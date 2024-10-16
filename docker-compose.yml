@@ -1,6 +1,8 @@
 services:
   bot:
     container_name: contour_professional_bot
+    command: >
+      sh -c "/app/bot > /app/log/stdout.log 2> /app/log/stderr.log"
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,5 +10,7 @@ services:
       TZ: Asia/Yekaterinburg
       ADMIN: ${ADMIN}
       TELEGRAM_APITOKEN: ${TELEGRAM_APITOKEN}
+    volumes:
+      - /home/commercial-telegram-bot/log:/app/log
     ports:
       - 5555:6666
