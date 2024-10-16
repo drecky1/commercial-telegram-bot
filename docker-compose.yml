@@ -11,6 +11,6 @@ services:
       ADMIN: ${ADMIN}
       TELEGRAM_APITOKEN: ${TELEGRAM_APITOKEN}
     volumes:
-      - /home/commercial-telegram-bot/log:/app/log
+      - /root/commercial-telegram-bot/log:/app/log
     ports:
       - 5555:6666
