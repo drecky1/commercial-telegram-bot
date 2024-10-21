@@ -58,7 +58,7 @@ func CheckSettings(msg *tgbotapi.Message, s *settings.Settings, c *cache.Cache) 
 	} else {
 		text = "НЕТ"
 	}
-	msg.Text = fmt.Sprintf(utils.NowSettingsMessage, s.MaxParticipants, text, len(c.ParticipantsIDs))
+	msg.Text = fmt.Sprintf(utils.NowSettingsMessage, s.MaxParticipants, text, len(c.ParticipantsIDs), s.GiftCode, s.MainPrize)
 }
 
 func ShowParticipants(msg *tgbotapi.Message, c *cache.Cache) {
