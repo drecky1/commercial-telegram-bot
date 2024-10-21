@@ -41,16 +41,14 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 	case "/close":
 		ok = true
 		if msg.Chat.ID == service.Settings.Admin {
-			service.Settings.Registration = false
 			commands.ShowParticipants(msg, service.Cache)
-			go func() {
-				if msg.Text != "" {
-					err := service.SendMessage(service.Settings.Admin, msg.Text)
-					if err != nil {
-						return
-					}
+			if msg.Text != "" {
+				err := service.SendMessage(service.Settings.Admin, msg.Text)
+				if err != nil {
+					return err
 				}
-			}()
+			}
+			service.Settings.Registration = false
 			msg.Text = utils.CloseRegistrationMessage
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
