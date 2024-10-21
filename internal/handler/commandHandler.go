@@ -10,7 +10,6 @@ import (
 )
 
 func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
-	var err error
 	var ok = false
 	parts := strings.Split(msg.Text, " ")
 	switch parts[0] {
@@ -18,7 +17,10 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 		_ = service.SendMessage(msg.Chat.ID, fmt.Sprintf("%d", msg.Chat.ID))
 		break
 	case "/start":
-		err = service.SendMenu(msg.Chat.ID, startMenu, startMenuMarkup)
+		err := service.SendMenu(msg.Chat.ID, startMenu, startMenuMarkup)
+		if err != nil {
+			return err
+		}
 		break
 	case "/open":
 		ok = true
@@ -40,6 +42,15 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 		ok = true
 		if msg.Chat.ID == service.Settings.Admin {
 			service.Settings.Registration = false
+			commands.ShowParticipants(msg, service.Cache)
+			go func() {
+				if msg.Text != "" {
+					err := service.SendMessage(service.Settings.Admin, msg.Text)
+					if err != nil {
+						return
+					}
+				}
+			}()
 			msg.Text = utils.CloseRegistrationMessage
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
@@ -105,6 +116,8 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 	if !ok {
 		return nil
 	}
-	err = service.SendMessage(msg.Chat.ID, msg.Text)
-	return err
+	if msg.Text == "" {
+		return nil
+	}
+	return service.SendMessage(msg.Chat.ID, msg.Text)
 }
