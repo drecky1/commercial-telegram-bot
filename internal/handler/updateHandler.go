@@ -14,14 +14,16 @@ func HandleUpdate(update tgbotapi.Update, service *telegram.Service) {
 			return
 		}
 		handleMessage(update.Message, service)
-		break
+		return
 
 	case update.CallbackQuery != nil:
 		if update.CallbackQuery.Message.Chat.Type != utils.PrivateChat {
 			return
 		}
 		err := handleButton(update.CallbackQuery, service)
-		log.Println(err)
-		break
+		if err != nil {
+			log.Println(err)
+		}
+		return
 	}
 }

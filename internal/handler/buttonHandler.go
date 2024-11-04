@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"tg_contour_bot/internal/cache"
@@ -17,9 +16,6 @@ func handleButton(query *tgbotapi.CallbackQuery, service *telegram.Service) erro
 
 	switch query.Data {
 	case nextButton:
-		if !service.Settings.Registration {
-			return errors.New("Регистрация пока не открыта.")
-		}
 		text = fmt.Sprintf(participateMenu, service.Settings.MainPrize)
 		markup = participateMenuMarkup
 	case backButton:

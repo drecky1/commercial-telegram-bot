@@ -23,7 +23,7 @@ func NewService(admin, token string) *Service {
 		// in case of smth went wrong
 		log.Fatal(err)
 	}
-	bot.Debug = true
+	bot.Debug = false
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	return &Service{
 		Bot:      bot,
