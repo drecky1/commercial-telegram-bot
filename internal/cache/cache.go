@@ -20,7 +20,7 @@ type Cache struct {
 	Participants      map[int64]UserInfo
 	ParticipantsIDs   []int64
 	ParticipateStates map[int64]string
-	Mutex             sync.Mutex
+	Mutex             sync.RWMutex
 }
 
 func NewCache() *Cache {
@@ -33,6 +33,8 @@ func NewCache() *Cache {
 }
 
 func (c *Cache) Get(key int64) (*UserInfo, bool) {
+	c.Mutex.RLock()
+	defer c.Mutex.RUnlock()
 	value, ok := c.Participants[key]
 	if !ok {
 		return nil, false
@@ -41,6 +43,8 @@ func (c *Cache) Get(key int64) (*UserInfo, bool) {
 }
 
 func (c *Cache) Set(key int64, value UserInfo) bool {
+	c.Mutex.Lock()
+	defer c.Mutex.Unlock()
 	c.Participants[key] = value
 	c.ParticipantsIDs = append(c.ParticipantsIDs, key)
 	return true

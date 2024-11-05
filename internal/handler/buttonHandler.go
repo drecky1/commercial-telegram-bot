@@ -26,7 +26,7 @@ func handleButton(query *tgbotapi.CallbackQuery, service *telegram.Service) erro
 			return service.SendMessage(message.Chat.ID, utils.MaxParticipantsComes)
 		}
 		u, ok := service.Cache.Get(message.Chat.ID)
-		if ok {
+		if ok && u.Title != "" && u.Phone != "" {
 			text = fmt.Sprintf(utils.AlreadyRegistered, u.Title, u.Phone)
 			return service.SendMenu(message.Chat.ID, text, updateParticipationDataMarkup)
 		}
