@@ -92,6 +92,7 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 			msg.Text = utils.PromocodeApplied
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
+			return service.SendMessage(msg.Chat.ID, msg.Text)
 		}
 	case "/prize":
 		if msg.Chat.ID == service.Settings.Admin {
@@ -101,6 +102,7 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 			msg.Text = fmt.Sprintf(utils.MainPrizeApllied, participateMessage)
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
+			return service.SendMessage(msg.Chat.ID, msg.Text)
 		}
 	case "/change":
 		ok = true

@@ -3,7 +3,7 @@ package utils
 const (
 	CompanyName      = "CONTUR PROFESSIONAL"
 	PrivateChat      = "private"
-	Participate      = "🎲 Учавствовать в розыгрыше"
+	Participate      = "🎲 Участвовать в розыгрыше"
 	Next             = "🔛 Далее"
 	Back             = "🔙 Назад"
 	UpdateTitle      = "Изменить имя📝"
