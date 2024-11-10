@@ -6,7 +6,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"os"
-	"strconv"
 	"tg_contour_bot/internal/handler"
 	"tg_contour_bot/internal/telegram"
 	"tg_contour_bot/utils"
@@ -32,11 +31,11 @@ func main() {
 	}
 
 	service := telegram.NewService(admin, moderator, token)
-	adminInt64, err := strconv.ParseInt(admin, 10, 64)
-	if err != nil {
-		log.Fatalf("Введенный админ не является числовым значение его чата в телеграмм. ")
-	}
-	go func() { _ = service.SendMessage(adminInt64, utils.WhatCanBotDo) }()
+
+	go func() {
+		service.SendMessage(service.Settings.Admin, utils.WhatCanBotDo)
+		service.SendMessage(service.Settings.Moderator, utils.WhatCanBotDo)
+	}()
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -48,7 +47,7 @@ func main() {
 	receiveUpdates(ctx, updates, service)
 
 	// Wait for a newline symbol, then cancel handling updates
-	_, err = bufio.NewReader(os.Stdin).ReadBytes('\n')
+	_, err := bufio.NewReader(os.Stdin).ReadBytes('\n')
 	if err != nil {
 		return
 	}
