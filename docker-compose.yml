@@ -9,6 +9,7 @@ services:
     environment:
       TZ: Asia/Yekaterinburg
       ADMIN: ${ADMIN}
+      MODERATOR: ${MODERATOR}
       TELEGRAM_APITOKEN: ${TELEGRAM_APITOKEN}
     volumes:
       - /root/commercial-telegram-bot/log:/app/log
