@@ -10,7 +10,15 @@ import (
 )
 
 func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
-	var ok = false
+	var isAdmin bool
+	switch msg.Chat.ID {
+	case service.Settings.Admin:
+		isAdmin = true
+	case service.Settings.Moderator:
+		isAdmin = true
+	default:
+		isAdmin = false
+	}
 	parts := strings.Split(msg.Text, " ")
 	switch parts[0] {
 	case "/get_id":
@@ -21,10 +29,9 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 		if err != nil {
 			return err
 		}
-		break
+		msg.Text = ""
 	case "/open":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
+		if isAdmin {
 			if service.Settings.GiftCode == "" {
 				msg.Text = utils.WrongOpenRegistrationCheckPromocode
 				return service.SendMessage(msg.Chat.ID, msg.Text)
@@ -39,51 +46,40 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/close":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
-			commands.ShowParticipants(msg, service.Cache)
-			if msg.Text != "" {
-				err := service.SendMessage(service.Settings.Admin, msg.Text)
-				if err != nil {
-					return err
-				}
-			}
+		if isAdmin {
+			commands.ShowParticipants(msg.Chat.ID, service)
 			service.Settings.Registration = false
 			msg.Text = utils.CloseRegistrationMessage
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/show":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
-			commands.ShowParticipants(msg, service.Cache)
+		if isAdmin {
+			commands.ShowParticipants(msg.Chat.ID, service)
+			msg.Text = ""
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/rand":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
+		if isAdmin {
 			commands.PickWinner(msg, service.Cache)
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/delete":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
+		if isAdmin {
 			commands.DeleteParticipants(msg, service.Settings, service.Cache)
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/settings":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
+		if isAdmin {
 			commands.CheckSettings(msg, service.Settings, service.Cache)
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
 	case "/promocode":
-		if msg.Chat.ID == service.Settings.Admin {
-			ok = true
+		if isAdmin {
 			service.Settings.GiftCode = strings.ToUpper(strings.TrimSpace(strings.Replace(msg.Text, "/promocode", "", -1)))
 			if service.Settings.GiftCode == "" {
 				msg.Text = "введен пустой промокод"
@@ -95,8 +91,7 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 			return service.SendMessage(msg.Chat.ID, msg.Text)
 		}
 	case "/prize":
-		if msg.Chat.ID == service.Settings.Admin {
-			ok = true
+		if isAdmin {
 			service.Settings.MainPrize = strings.TrimSpace(strings.Replace(msg.Text, "/prize", "", -1))
 			participateMessage := fmt.Sprintf(utils.ParticipateMessage, service.Settings.MainPrize)
 			msg.Text = fmt.Sprintf(utils.MainPrizeApllied, participateMessage)
@@ -105,16 +100,13 @@ func handleCommand(msg *tgbotapi.Message, service *telegram.Service) error {
 			return service.SendMessage(msg.Chat.ID, msg.Text)
 		}
 	case "/change":
-		ok = true
-		if msg.Chat.ID == service.Settings.Admin {
+		if isAdmin {
 			commands.ChangeParticipants(msg, service.Settings)
 		} else {
 			msg.Text = utils.YouAreNotAdministrator
 		}
-	}
-
-	if !ok {
-		return nil
+	default:
+		break
 	}
 	if msg.Text == "" {
 		return nil

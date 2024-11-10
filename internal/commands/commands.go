@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"tg_contour_bot/internal/cache"
 	"tg_contour_bot/internal/settings"
+	"tg_contour_bot/internal/telegram"
 	"tg_contour_bot/utils"
 )
 
@@ -61,18 +62,22 @@ func CheckSettings(msg *tgbotapi.Message, s *settings.Settings, c *cache.Cache) 
 	msg.Text = fmt.Sprintf(utils.NowSettingsMessage, s.MaxParticipants, text, len(c.ParticipantsIDs), s.GiftCode, s.MainPrize)
 }
 
-func ShowParticipants(msg *tgbotapi.Message, c *cache.Cache) {
+func ShowParticipants(msgChatID int64, ser *telegram.Service) {
 	var text string
-	if len(c.ParticipantsIDs) == 0 {
-		msg.Text = utils.NoParticipantsMessage
+	if len(ser.Cache.ParticipantsIDs) == 0 {
+		_ = ser.SendMessage(msgChatID, utils.NoParticipantsMessage)
 		return
 	}
-	for _, participantID := range c.ParticipantsIDs {
-		v, ok := c.Participants[participantID]
+	for index, participantID := range ser.Cache.ParticipantsIDs {
+		v, ok := ser.Cache.Participants[participantID]
 		if !ok {
 			continue
 		}
 		text += fmt.Sprintf("%d %s %s %s\n", v.ParticipantNumber, v.Title, v.Phone, v.TelegramUsername)
+		if index%settings.DefaultShowMessageCount == 0 {
+			_ = ser.SendMessage(msgChatID, text)
+			text = ""
+		}
 	}
-	msg.Text = text
+	return
 }

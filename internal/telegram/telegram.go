@@ -15,15 +15,15 @@ type Service struct {
 	Mutex    sync.Mutex
 }
 
-func NewService(admin, token string) *Service {
-	s := settings.NewSettings(admin)
+func NewService(admin, moderator, token string) *Service {
+	s := settings.NewSettings(admin, moderator)
 	c := cache.NewCache()
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		// in case of smth went wrong
 		log.Fatal(err)
 	}
-	bot.Debug = false
+	bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	return &Service{
 		Bot:      bot,

@@ -24,10 +24,50 @@ type Cache struct {
 }
 
 func NewCache() *Cache {
-	var p []int64
+	//pids := []int64{1, 2, 3, 4, 5, 6}
+	//ps := map[int64]UserInfo{
+	//	1: {
+	//		TelegramUsername:  "1",
+	//		Title:             "Denis1",
+	//		Phone:             "+79999999901",
+	//		ParticipantNumber: 1,
+	//	},
+	//	2: {
+	//		TelegramUsername:  "2",
+	//		Title:             "Denis2",
+	//		Phone:             "+79999999902",
+	//		ParticipantNumber: 2,
+	//	},
+	//	3: {
+	//		TelegramUsername:  "3",
+	//		Title:             "Denis3",
+	//		Phone:             "+79999999903",
+	//		ParticipantNumber: 3,
+	//	},
+	//	4: {
+	//		TelegramUsername:  "4",
+	//		Title:             "Denis4",
+	//		Phone:             "+79999999904",
+	//		ParticipantNumber: 4,
+	//	},
+	//	5: {
+	//		TelegramUsername:  "5",
+	//		Title:             "Denis5",
+	//		Phone:             "+79999999905",
+	//		ParticipantNumber: 5,
+	//	},
+	//	6: {
+	//		TelegramUsername:  "6",
+	//		Title:             "Denis6",
+	//		Phone:             "+79999999906",
+	//		ParticipantNumber: 6,
+	//	},
+	//}
+	pids := []int64{}
+	ps := map[int64]UserInfo{}
 	return &Cache{
-		Participants:      make(map[int64]UserInfo),
-		ParticipantsIDs:   p,
+		Participants:      ps,
+		ParticipantsIDs:   pids,
 		ParticipateStates: make(map[int64]string),
 	}
 }

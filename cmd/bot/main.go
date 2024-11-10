@@ -19,13 +19,19 @@ func main() {
 		return
 	}
 
+	moderator := os.Getenv("MODERATOR")
+	if moderator == "" {
+		log.Println("Сделайте: export MODERATOR=<CHAT_ID>")
+		return
+	}
+
 	token := os.Getenv("TELEGRAM_APITOKEN")
 	if token == "" {
 		log.Println("Сделайте: export TELEGRAM_APITOKEN=<TOKEN>")
 		return
 	}
 
-	service := telegram.NewService(admin, token)
+	service := telegram.NewService(admin, moderator, token)
 	adminInt64, err := strconv.ParseInt(admin, 10, 64)
 	if err != nil {
 		log.Fatalf("Введенный админ не является числовым значение его чата в телеграмм. ")
